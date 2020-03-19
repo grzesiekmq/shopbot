@@ -1,0 +1,126 @@
+[
+  {
+    "text": "Hello how are you",
+    "label": "greeting"
+  },
+  {
+    "text": "hi what do you want do today",
+    "label": "greeting"
+  },
+  {
+    "text": "hey",
+    "label": "greeting"
+  },
+  {
+    "text": "how are you",
+    "label": "greeting"
+  },
+  {
+    "text": "how you are doing",
+    "label": "greeting"
+  },
+  {
+    "text": "yo",
+    "label": "greeting"
+  },
+  {
+    "text": "add bacon",
+    "label": "add"
+  },
+  {
+    "text": "add bread",
+    "label": "add"
+  },
+  {
+    "text": "add beer",
+    "label": "add"
+  },
+  {
+    "text": "add butter",
+    "label": "add"
+  },
+  {
+    "text": "add chips",
+    "label": "add"
+  },
+  {
+    "text": "add coffee",
+    "label": "add"
+  },
+  {
+    "text": "add corn flakes",
+    "label": "add"
+  },
+  {
+    "text": "add eggs",
+    "label": "add"
+  },
+  {
+    "text": "add garlic sauce",
+    "label": "add"
+  },
+  {
+    "text": "add ketchup",
+    "label": "add"
+  },
+  {
+    "text": "add milk",
+    "label": "add"
+  },
+  {
+    "text": "add mustard",
+    "label": "add"
+  },
+  {
+    "text": "add sausage",
+    "label": "add"
+  },
+  {
+    "text": "add water",
+    "label": "add"
+  },
+  {
+    "text": "add wine",
+    "label": "add"
+  },
+  {
+    "text": "add buns",
+    "label": "add"
+  },
+  {
+    "text": "items count",
+    "label": "count"
+  },
+  {
+    "text": "ic",
+    "label": "count"
+  },
+  {
+    "text": "groceries status",
+    "label": "show"
+  },
+  {
+    "text": "gs",
+    "label": "show"
+  },
+  {
+    "text": "show list",
+    "label": "show"
+  },
+  {
+    "text": "sl",
+    "label": "show"
+  },
+  {
+    "text": "remove list",
+    "label": "remove"
+  },
+  {
+    "text": "rl",
+    "label": "remove"
+  },
+  {
+    "text": "del",
+    "label": "remove"
+  }
+]
