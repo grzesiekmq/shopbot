@@ -1,13 +1,48 @@
-from tkinter import *
-
 from textblob.classifiers import NaiveBayesClassifier
 
-with open('tags.json') as f:
-    classifier = NaiveBayesClassifier(f, format="json")
+import asyncio
+
+import websockets
+
+product = ""
+bonus_product = ""
+mba = ""
 
 products = []
 
-bot_name = "Shoppy"
+pairs = [["chips", "beer"],
+         ["eggs", "bacon"],
+         ["bread", "butter"],
+         ["buns", "butter"],
+         ["corn flakes", "milk"],
+         ["coffee", "milk"],
+         ["ketchup", "sausage"],
+         ["garlic sauce", "sausage"],
+         ["mustard", "sausage"]
+         ]
+
+
+def get_bonus_product():
+    for pair in pairs:
+        contains_product = pair.__contains__(product)
+        product_index = pair.index(product)
+
+        # lhs (product left-hand side)
+        # bonus product right-hand side - see on google association rules
+        if (contains_product and product_index == 0):
+            bonus_product_index = product_index + 1
+            bonus_product_rhs = pair[bonus_product_index]
+            return bonus_product_rhs
+        # rhs (product right-hand side)
+        # bonus product left-hand side
+        elif (contains_product and product_index == 1):
+            bonus_product_index = product_index - 1
+            bonus_product_lhs = pair[bonus_product_index]
+            return bonus_product_lhs
+
+
+with open('tags.json') as f:
+    classifier = NaiveBayesClassifier(f, format="json")
 
 
 def greet():
@@ -16,8 +51,6 @@ def greet():
 
 def add():
     products.append(product)
-    added_product = "added " + product
-    return added_product
 
 
 def count():
@@ -28,9 +61,10 @@ def count():
 
 def show():
     if (product != None):
-        status = "groceries status: \n"
+        status = "<ol><b>groceries status</b> <br>"
         for p in products:
-            status += "> " + p + '\n'
+            status += "<li>" + p + '</li>'
+        status += '</ol>'
         return status
 
 
@@ -50,35 +84,12 @@ def get_message(arg):
     return switcher.get(arg, "sorry I don't understand")
 
 
-start_text = "Hi available commands: \n add [product] (example: add chips), \n" \
-             "items count, alias total \n" \
-             "groceries status, alias gs \n" \
-             "show list, alias sl \n" \
-             "remove list, alias rl, \n"
-
-## GUI ##
-tk = Tk()
-tk.title("Shop bot")
-tk.geometry("400x500")
-tk.resizable(width=FALSE, height=FALSE)
-# box to enter message
-EntryBox = Text(tk, bd=0, bg="#123456", width="29", height="5", font="Arial")
-
-product = ""
-
-
-def send():
-    input_text = EntryBox.get("1.0", "end-1c")
-    chatlog_builder(input_text)
-
-    EntryBox.delete("0.0", END)
-
-    global product
-
+def process_text(input_text):
+    global product, mba
     contains_add = input_text.__contains__("add")
+
     word = input_text.split()
     # when product consists of many words
-
     if (contains_add and len(word) > 2):
         product = input_text[4:]
     elif (contains_add):
@@ -86,54 +97,30 @@ def send():
 
     label = classifier.classify(input_text)
 
+    print('label ' + label)
+
     user_msg = get_message(label)
-
-    ChatLog.insert(END, bot_name + ': ' + user_msg())
-
-
-ChatLog = Text(tk, bd=0, bg="white", height="8", width="50", font="Arial", )
-
-ChatLog.config(foreground="#fff", font=("Verdana", 12), bg="#123456")
-
-# bot
-ChatLog.insert(END, bot_name + ': ' + start_text + '\n\n')
-ChatLog.config(state=NORMAL)
-
-scrollbar = Scrollbar(tk, command=ChatLog.yview, cursor="heart")
+    return user_msg
 
 
-def chatlog_builder(arg):
-    if (arg != ""):
-        # user
-        ChatLog.insert(END, "\n User: " + arg + '\n\n')
-        ChatLog.yview(END)
+async def time(websocket, path):
+    while True:
+        global bonus_product
+        input_text = await websocket.recv()
+        print('msg' + input_text)
+
+        user_msg = process_text(input_text)
+
+        if (input_text.__contains__("add")):
+            bonus_product = get_bonus_product()
+            mba = "Do you want to also add " + bonus_product + '?'
+            await websocket.send(mba)
+        else:
+            await websocket.send(user_msg())
 
 
-def bind_scrollbar():
-    ChatLog['yscrollcommand'] = scrollbar.set
+start_server = websockets.serve(time, "127.0.0.1", 5678)
+print('connected')
 
-
-bind_scrollbar()
-
-SendBtn = Button(tk,
-                 font=("Verdana", 12, 'bold'),
-                 text="Send",
-                 width="10",
-                 height=5,
-                 bd=1,
-                 bg="#fff",
-                 activebackground="#3c9d9b",
-                 fg='#123456',
-                 command=send)
-
-
-def place_component():
-    scrollbar.place(x=376, y=6, height=386)
-    ChatLog.place(x=6, y=6, height=386, width=370)
-    EntryBox.place(x=128, y=401, height=90, width=265)
-    SendBtn.place(x=6, y=401, height=90)
-
-
-place_component()
-
-tk.mainloop()
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()

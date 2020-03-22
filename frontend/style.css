@@ -1,0 +1,17 @@
+body {
+    background: linear-gradient(#17945A, rgb(6, 149, 81));
+}
+
+.botui-messages-container {
+    background: radial-gradient(#00a9a9, #00b9b6);
+    box-shadow: inset 4px 5px 200px 0px #00f9a9;
+}
+
+.botui-messages-container>div div div {
+    background: radial-gradient(#17945A, rgb(6, 149, 81));
+    color: white
+}
+
+.botui-message-content.html span code{
+    color: #333
+}
