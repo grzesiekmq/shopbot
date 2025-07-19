@@ -16,13 +16,17 @@ ShopBot is designed to assist users in making informed shopping decisions by ana
 - **Market Basket Analysis**: Identifies associations between products to suggest complementary items.
 - **BotUI Frontend**: Provides an interactive conversational interface for user interactions.
 
+## Known Issues
+
+- There is a known problem with the ordering of messages in the chat interface, which may affect the user experience.
+  
 ## Installation
 
 1. Clone the repository:
 
    ```bash
    git clone https://github.com/grzesiekmq/shopbot.git
-```
+   ```
 2. Navigate to the project directory:
 
 cd shopbot
